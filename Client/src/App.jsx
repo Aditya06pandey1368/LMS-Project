@@ -3,11 +3,9 @@ import './App.css'
 import { Button } from './components/ui/button'
 import Login from './Pages/Login'
 import Navbar from './Pages/Navbar'
-import HeroSection from './Pages/Student/HeroSection'
 import MyLearning from './Pages/Student/MyLearning'
 import MainLayout from './layout/MainLayout'
 import { RouterProvider } from 'react-router'
-import OurCourses from './Pages/Student/OurCourses'
 import StudentProfile from './Pages/Student/StudentProfile'
 import { Toaster } from 'sonner'
 import AdminSidebar from './Pages/Admin/AdminSidebar'
@@ -18,6 +16,8 @@ import EditCourse from './Pages/Admin/course/EditCourse'
 import CreateLecture from './Pages/Admin/lecture/CreateLecture'
 import EditLecture from './Pages/Admin/lecture/EditLecture'
 import CourseDetail from './Pages/Student/CourseDetail'
+import HomePage from './Pages/Student/HomePage'
+
 
 const appRouter = createBrowserRouter([
   {
@@ -26,11 +26,7 @@ const appRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element:
-          <>
-            <HeroSection />
-            <OurCourses />
-          </>
+        element: <HomePage/>
       },
       {
         path: "login",

@@ -1,21 +1,33 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
-import {createCourse, createLecture, editCourse, editLecture, getCourseById, getCourseLecture, getCreatorCourses, getLectureById, getPublishedCourse, removeLecture, togglePublishCourse } from "../Controllers/course.controller.js";
+import {
+  createCourse,
+  createLecture,
+  editCourse,
+  editLecture,
+  getCourseById,
+  getCourseLecture,
+  getCreatorCourses,
+  getLectureById,
+  getPublishedCourse,
+  removeLecture,
+  togglePublishCourse
+} from "../Controllers/course.controller.js";
 import upload from "../utils/multer.js";
 
 const router = express.Router();
 
-router.route("/").post(isAuthenticated,createCourse);
-router.route("/published-courses").get(isAuthenticated,getPublishedCourse);
-router.route("/").get(isAuthenticated,getCreatorCourses);
-router.put("/:courseId", upload.single("courseThumbnail"), editCourse);
-router.get("/:courseId",  (isAuthenticated,getCourseById));
-router.post("/:courseId/lecture",  (isAuthenticated,createLecture));
-router.get("/:courseId/lecture",  (isAuthenticated,getCourseLecture ));
-router.post("/:courseId/lecture/:lectureId",  (isAuthenticated, editLecture ));
-router.delete("/lecture/:lectureId",  (isAuthenticated, removeLecture ));
-router.get("/lecture/:lectureId",  (isAuthenticated, getLectureById ));
-router.patch("/:courseId",  (isAuthenticated, togglePublishCourse ));
+router.route("/").post(isAuthenticated, createCourse);
+router.route("/published-courses").get(isAuthenticated, getPublishedCourse);
+router.route("/").get(isAuthenticated, getCreatorCourses);
 
+router.put("/:courseId", upload.single("courseThumbnail"), editCourse);
+router.get("/:courseId", isAuthenticated, getCourseById);
+router.post("/:courseId/lecture", isAuthenticated, createLecture);
+router.get("/:courseId/lecture", isAuthenticated, getCourseLecture);
+router.post("/:courseId/lecture/:lectureId", isAuthenticated, editLecture);
+router.delete("/lecture/:lectureId", isAuthenticated, removeLecture);
+router.get("/lecture/:lectureId", isAuthenticated, getLectureById);
+router.patch("/:courseId", isAuthenticated, togglePublishCourse);
 
 export default router;

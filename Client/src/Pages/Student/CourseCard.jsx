@@ -1,13 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { motion } from "framer-motion"
+import { Link } from "react-router-dom";
 
 const CourseCard = ({ course }) => {
   const getLevelColor = () => {
     switch (course.courseLevel) {
       case "Beginner": return "bg-green-500 text-white";
       case "Intermediate": return "bg-yellow-500 text-white";
-      case "Advanced": return "bg-red-500 text-white";
+      case "Advance": return "bg-red-500 text-white";
       default: return "bg-gray-400 text-white";
     }
   };
@@ -17,6 +18,7 @@ const CourseCard = ({ course }) => {
       whileHover={{ scale: 1.03 }}
       transition={{ type: "spring", stiffness: 200 }}
     >
+      <Link to={`course-detail/${course._id}`}>
       <Card className="shadow-md hover:shadow-xl transition-all dark:bg-gray-800 p-0">
         <img
           src={course.courseThumbnail}
@@ -30,6 +32,7 @@ const CourseCard = ({ course }) => {
           <p className="text-md font-semibold text-indigo-600 dark:text-indigo-400">{course.coursePrice ? '₹' + course.coursePrice : "Free"}</p>
         </CardContent>
       </Card>
+      </Link>
     </motion.div>
   );
 };

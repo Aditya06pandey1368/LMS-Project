@@ -19,12 +19,12 @@ export default function CourseTable() {
   });
 
   const navigate = useNavigate();
-  if (isLoading) return <h1>Loading...</h1>
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
-    <div className="h-screen w-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors px-4 py-6 md:px-8">
+    <div className="min-h-screen w-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors px-4 py-6 md:px-8 pt-[60px]">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6 mt-5">
+      <div className="flex justify-between items-center mb-6">
         <Button onClick={() => navigate('create')}>Create a New Course</Button>
       </div>
 
@@ -33,7 +33,7 @@ export default function CourseTable() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full h-[calc(100%-80px)] overflow-x-auto"
+        className="w-full overflow-x-auto"
       >
         <Table className="w-full table-auto">
           <TableHeader>
@@ -45,29 +45,41 @@ export default function CourseTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.courses.map((course) => (
-              <TableRow key={course._id} className="hover:bg-muted/50">
-                <TableCell className="px-6 py-4">{course.courseTitle}</TableCell>
-                <TableCell className="px-6 py-4">{course?.coursePrice || "Free"}</TableCell>
-                <TableCell className="px-6 py-4">
-                  <Badge
-                    className={
-                      course.isPublished
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                    }
-                  >
-                    {course.isPublished ? "Published" : "Draft"}
-                  </Badge>
-                </TableCell>
-                <TableCell className="px-6 py-4 text-right">
-                  <Button variant="outline" size="sm" onClick={() => navigate(`${course._id}`)}>
-                    <Pencil className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
+            {data?.courses?.length > 0 ? (
+              data.courses.map((course) => (
+                <TableRow key={course._id} className="hover:bg-muted/50">
+                  <TableCell className="px-6 py-4">{course.courseTitle}</TableCell>
+                  <TableCell className="px-6 py-4">{course?.coursePrice || "Free"}</TableCell>
+                  <TableCell className="px-6 py-4">
+                    <Badge
+                      className={
+                        course.isPublished
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                      }
+                    >
+                      {course.isPublished ? "Published" : "Draft"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-right">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`${course._id}`)}
+                    >
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} className="px-6 py-4 text-center">
+                  No courses found.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </motion.div>

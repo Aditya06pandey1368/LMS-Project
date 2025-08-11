@@ -5,10 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateLectureMutation, useGetCourseLectureQuery } from "@/Features/api/courseApi";
+import {
+  useCreateLectureMutation,
+  useGetCourseLectureQuery,
+} from "@/Features/api/courseApi";
 import { toast } from "sonner";
 import { Loader2, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function CreateLecture() {
   const navigate = useNavigate();
@@ -16,8 +20,12 @@ export default function CreateLecture() {
 
   const [lectureTitle, setLectureTitle] = useState("");
   const [isPreviewFree, setIsPreviewFree] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [mediaUploading, setMediaUploading] = useState(false);
+  const [videoInfo, setVideoInfo] = useState(null);
 
-  const [createLecture, { data, isLoading, isSuccess, error }] = useCreateLectureMutation();
+  const [createLecture, { isLoading, isSuccess, error }] =
+    useCreateLectureMutation();
 
   const {
     data: lectureData,
@@ -30,6 +38,9 @@ export default function CreateLecture() {
     if (isSuccess) {
       toast.success("Lecture created successfully.");
       setLectureTitle("");
+      setVideoInfo(null);
+      setUploadProgress(0);
+      setIsPreviewFree(false);
       refetch();
     }
     if (error) {
@@ -41,8 +52,41 @@ export default function CreateLecture() {
     navigate("/admin/course");
   };
 
+  const fileChangeHandler = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setMediaUploading(true);
+      setUploadProgress(0);
+
+      const res = await axios.post("/api/media/upload-video", formData, {
+        onUploadProgress: ({ loaded, total }) => {
+          setUploadProgress(Math.round((loaded * 100) / total));
+        },
+      });
+
+      if (res.data.success) {
+        setVideoInfo({
+          videoUrl: res.data.data.url,
+          publicId: res.data.data.public_id,
+        });
+        toast.success("Video uploaded successfully");
+      } else {
+        toast.error("Video upload failed");
+      }
+    } catch (err) {
+      toast.error("Error uploading video");
+    } finally {
+      setMediaUploading(false);
+    }
+  };
+
   const handleCreate = () => {
-    if (!lectureTitle) {
+    if (!lectureTitle.trim()) {
       toast.error("Lecture title is required.");
       return;
     }
@@ -50,12 +94,16 @@ export default function CreateLecture() {
       toast.error("Course ID is missing.");
       return;
     }
+    if (!videoInfo) {
+      toast.error("Please upload a video before creating the lecture.");
+      return;
+    }
 
     createLecture({
       courseId,
       lectureTitle,
-      videoUrl: "https://cloudinary.com/demo-video.mp4",
-      publicId: "cloudinary-public-id",
+      videoUrl: videoInfo.videoUrl,
+      publicId: videoInfo.publicId,
       isPreviewFree,
     });
   };
@@ -78,13 +126,15 @@ export default function CreateLecture() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3">Let’s add lectures</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3">
+            Let’s add lectures
+          </h1>
           <p className="text-muted-foreground text-lg">
-            Fill in the basic details to create a new lecture.
+            Fill in the details to create a new lecture.
           </p>
         </motion.div>
 
-        {/* Input */}
+        {/* Lecture Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -97,11 +147,38 @@ export default function CreateLecture() {
           <Input
             id="title"
             placeholder="Enter the lecture title"
-            className="w-full"
             value={lectureTitle}
             onChange={(e) => setLectureTitle(e.target.value)}
           />
         </motion.div>
+
+        {/* Video Upload */}
+        <div className="space-y-2">
+          <Label className="text-base">Upload Lecture Video</Label>
+          <Input type="file" accept="video/*" onChange={fileChangeHandler} />
+          {mediaUploading && (
+            <p className="text-sm text-muted-foreground">
+              Uploading... {uploadProgress}%
+            </p>
+          )}
+          {videoInfo && (
+            <video
+              src={videoInfo.videoUrl}
+              controls
+              className="w-full mt-2 rounded-lg"
+            />
+          )}
+        </div>
+
+        {/* Preview Toggle */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={isPreviewFree}
+            onChange={() => setIsPreviewFree((prev) => !prev)}
+          />
+          <span>Make Preview Free</span>
+        </div>
 
         {/* Buttons */}
         <motion.div
@@ -110,10 +187,10 @@ export default function CreateLecture() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 pt-4"
         >
-          <Button variant="outline" className="w-full sm:w-auto" onClick={handleBack}>
+          <Button variant="outline" onClick={handleBack}>
             Back to Course
           </Button>
-          <Button className="w-full sm:w-auto" onClick={handleCreate} disabled={isLoading}>
+          <Button onClick={handleCreate} disabled={isLoading}>
             {isLoading ? "Creating..." : "Create Lecture"}
           </Button>
         </motion.div>
@@ -137,7 +214,9 @@ export default function CreateLecture() {
         )}
 
         {lectureError && (
-          <p className="text-center text-red-500">Failed to load lectures. Try again.</p>
+          <p className="text-center text-red-500">
+            Failed to load lectures. Try again.
+          </p>
         )}
 
         {!lectureLoading && lectureData?.lectures?.length === 0 && (
@@ -147,7 +226,9 @@ export default function CreateLecture() {
               alt="No Lectures"
               className="mx-auto h-40 opacity-70 dark:opacity-50"
             />
-            <p className="text-xl font-medium text-muted-foreground">No lectures available</p>
+            <p className="text-xl font-medium text-muted-foreground">
+              No lectures available
+            </p>
           </div>
         )}
 
@@ -157,11 +238,7 @@ export default function CreateLecture() {
             animate="visible"
             variants={{
               hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.1,
-                },
-              },
+              visible: { transition: { staggerChildren: 0.1 } },
             }}
             className="space-y-4"
           >
@@ -171,7 +248,7 @@ export default function CreateLecture() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="border rounded-xl p-5 flex items-center justify-between shadow-sm hover:shadow-lg transition-all duration-200"
+                className="border rounded-xl p-5 flex items-center justify-between shadow-sm hover:shadow-lg"
               >
                 <h3 className="text-lg sm:text-xl font-semibold">
                   Lecture-{index + 1}: {lecture.lectureTitle}
@@ -181,8 +258,7 @@ export default function CreateLecture() {
                   onClick={() => updateLectures(lecture._id)}
                   className="flex items-center gap-1 text-sm"
                 >
-                  <Pencil className="w-4 h-4" />
-                  Edit
+                  <Pencil className="w-4 h-4" /> Edit
                 </Button>
               </motion.div>
             ))}

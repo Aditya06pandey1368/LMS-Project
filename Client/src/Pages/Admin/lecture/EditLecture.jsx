@@ -10,7 +10,7 @@ import { ArrowLeft, Loader } from "lucide-react";
 import { Progress } from "@radix-ui/react-progress";
 import { toast } from "sonner";
 import axios from "axios";
-import { useEditCourseMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from "@/Features/api/courseApi";
+import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from "@/Features/api/courseApi";
 
 const MEDIA_API = "http://localhost:3001/api/media";
 
@@ -27,7 +27,7 @@ const EditLecture = () => {
   const params = useParams();
   const { lectureId } = params;
 
-  const [editLecture, { data, isLoading, error, isSuccess }] = useEditCourseMutation();
+  const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
   const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] = useRemoveLectureMutation();
   const { data: lectureData } = useGetLectureByIdQuery(lectureId);
 
