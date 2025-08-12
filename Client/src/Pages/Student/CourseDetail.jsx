@@ -23,17 +23,16 @@ export default function CourseDetail() {
 
   const { data, isLoading, isError } = useGetCourseDetailWithStatusQuery(courseId);
 
-  if (isLoading) return console.log(data) ;
+  if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Failed to load course details</h1>;
 
   const { course, purchased } = data;
 
   const handleContinueCourse = () => {
-    if (purchased) {
+    if (purchased || course.coursePrice === undefined) {
       navigate(`/course-progress/${courseId}`)
     }
   }
-
   return (
     <div className="min-h-screen w-full bg-white dark:bg-black text-gray-900 dark:text-white p-6 md:p-10 space-y-10 transition-colors duration-500">
       {/* Section 1 */}
@@ -43,7 +42,7 @@ export default function CourseDetail() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7 }}
       >
-        <h1 className="text-3xl md:text-5xl font-bold mt-13">{course.courseTitle}</h1>
+        <h1 className="text-3xl md:text-5xl font-bold pt-12">{course.courseTitle}</h1>
         <p className="text-xl text-muted-foreground">{course.subTitle}</p>
         <p className="text-sm">
           Created by <span className="font-semibold">{course.creator.name}</span>
@@ -106,25 +105,31 @@ export default function CourseDetail() {
             transition={{ duration: 0.7 }}
           >
             <Card className="overflow-hidden">
-              <div className="aspect-video bg-gray-200 dark:bg-gray-800">
-                <ReactPlayer
-                  width="100%"
-                  height="100%"
-                  url={course.lectures[0].videoUrl}
-                  controls
-                />
+              <div className="aspect-video bg-gray-200 dark:bg-gray-900 relative pl-6 pr-6" >
+                {!isLoading && course?.lectures?.[0]?.videoUrl && (
+                  <video
+                    src={course.lectures[0].videoUrl}
+                    controls
+                    style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+                  />
+
+                )}
+
               </div>
-              <CardContent className="pt-4">
+              <CardContent>
                 <p className="text-lg font-semibold">{course.courseTitle}</p>
-                <Separator className="mb-4" />
+                <Separator className="mb-3" />
                 <div className="flex items-center justify-between flex-wrap">
-                  <span className="text-xl font-bold">₹999</span>
-                  {purchased ? (
+                  <span className="text-xl font-bold">
+                    {course.coursePrice ?? "Free"}
+                  </span>
+                  {(purchased || course.coursePrice === undefined || course.coursePrice === "Free") ? (
                     <Button onClick={handleContinueCourse}>Continue Course</Button>
                   ) : (
                     <BuyCourseButton courseId={courseId} />
                   )}
                 </div>
+
               </CardContent>
             </Card>
           </motion.div>
@@ -140,8 +145,8 @@ export default function CourseDetail() {
                 <p className="text-lg font-semibold">{course.courseTitle}</p>
                 <Separator className="mb-4" />
                 <div className="flex items-center justify-between flex-wrap">
-                  <span className="text-xl font-bold">₹999</span>
-                  {purchased ? (
+                  <span className="text-xl font-bold">{course.coursePrice ? course.coursePrice : "Free"}</span>
+                  {(purchased || course.coursePrice === undefined || course.coursePrice === "Free") ? (
                     <Button onClick={handleContinueCourse}>Continue Course</Button>
                   ) : (
                     <BuyCourseButton courseId={courseId} />

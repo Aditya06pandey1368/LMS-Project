@@ -10,13 +10,17 @@ import { ArrowLeft, Loader } from "lucide-react";
 import { Progress } from "@radix-ui/react-progress";
 import { toast } from "sonner";
 import axios from "axios";
-import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from "@/Features/api/courseApi";
+import {
+  useEditLectureMutation,
+  useGetLectureByIdQuery,
+  useRemoveLectureMutation,
+} from "@/Features/api/courseApi";
 
 const MEDIA_API = "http://localhost:3001/api/media";
 
 const EditLecture = () => {
   const navigate = useNavigate();
-  const { courseId } = useParams();
+  const { courseId, lectureId } = useParams();
 
   const [lectureTitle, setLectureTitle] = useState("");
   const [uploadVideoInfo, setUploadVideoInfo] = useState(null);
@@ -24,21 +28,24 @@ const EditLecture = () => {
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [btnDisable, setBtnDisable] = useState(true);
-  const params = useParams();
-  const { lectureId } = params;
 
-  const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
-  const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] = useRemoveLectureMutation();
-  const { data: lectureData } = useGetLectureByIdQuery(lectureId);
+  const [editLecture, { data, isLoading, error, isSuccess }] =
+    useEditLectureMutation();
+  const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] =
+    useRemoveLectureMutation();
+
+  // 🔄 Added refetch from useGetLectureByIdQuery
+  const { data: lectureData, refetch } = useGetLectureByIdQuery(lectureId);
 
   const lecture = lectureData?.lecture;
+
   useEffect(() => {
     if (lecture) {
       setLectureTitle(lecture.lectureTitle);
-      setIsFree(lecture.isPreviewFree ?? false); 
+      setIsFree(lecture.isPreviewFree ?? false);
       setUploadVideoInfo(lecture.videoInfo);
     }
-  }, [lecture])
+  }, [lecture]);
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
@@ -49,11 +56,14 @@ const EditLecture = () => {
       try {
         const res = await axios.post(`${MEDIA_API}/upload-video`, formData, {
           onUploadProgress: ({ loaded, total }) => {
-            setUploadProgress(Math.round((loaded * 100) / total))
-          }
+            setUploadProgress(Math.round((loaded * 100) / total));
+          },
         });
         if (res.data.success) {
-          setUploadVideoInfo({ videoUrl: res.data.data.url, publicId: res.data.data.public_id })
+          setUploadVideoInfo({
+            videoUrl: res.data.data.url,
+            publicId: res.data.data.public_id,
+          });
           setBtnDisable(false);
           toast.success(res.data.message);
         }
@@ -64,32 +74,39 @@ const EditLecture = () => {
         setMediaProgress(false);
       }
     }
-  }
+  };
 
   const editLectureHandler = async () => {
-    
-    await editLecture({ lectureTitle, videoInfo: uploadVideoInfo, isPreviewFree: isFree, courseId, lectureId });
-  }
+    await editLecture({
+      lectureTitle,
+      videoInfo: uploadVideoInfo,
+      isPreviewFree: isFree,
+      courseId,
+      lectureId,
+    });
+  };
 
   const removeLectureHandler = async () => {
     await removeLecture(lectureId);
     navigate(`/admin/course/${courseId}/lecture`);
-  }
+  };
 
+  // ✅ Refetch after successful edit
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message);
+      refetch();
     }
     if (error) {
       toast.error(error.data.message);
     }
-  }, [isSuccess, error])
+  }, [isSuccess, error, data, refetch]);
 
   useEffect(() => {
     if (removeSuccess) {
       toast.success(removeData.message);
     }
-  }, [removeSuccess]);
+  }, [removeSuccess, removeData]);
 
   return (
     <motion.div
@@ -138,7 +155,12 @@ const EditLecture = () => {
 
           <div className="space-y-2">
             <Label htmlFor="title" className="text-base">Title</Label>
-            <Input id="title" value={lectureTitle} onChange={(e) => setLectureTitle(e.target.value)} placeholder="Enter lecture title..." />
+            <Input
+              id="title"
+              value={lectureTitle}
+              onChange={(e) => setLectureTitle(e.target.value)}
+              placeholder="Enter lecture title..."
+            />
           </div>
 
           <div className="space-y-2">
@@ -155,19 +177,22 @@ const EditLecture = () => {
           </div>
 
           <div className="flex items-center space-x-4 pt-4">
-            <Label htmlFor="isFree" className="text-base">Is this lecture free to preview?</Label>
+            <Label htmlFor="isFree" className="text-base">
+              Is this lecture free to preview?
+            </Label>
             <Switch
               id="isFree"
               checked={isFree}
               onCheckedChange={(checked) => setIsFree(checked)}
             />
-
           </div>
 
           {mediaProgress && (
             <div className="w-full max-w-md space-y-2">
               <Progress value={uploadProgress} className="w-full" />
-              <p className="text-sm text-muted-foreground">{uploadProgress}% uploaded</p>
+              <p className="text-sm text-muted-foreground">
+                {uploadProgress}% uploaded
+              </p>
             </div>
           )}
 
@@ -186,7 +211,6 @@ const EditLecture = () => {
               "Update Lecture"
             )}
           </Button>
-
         </CardContent>
       </Card>
     </motion.div>

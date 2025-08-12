@@ -72,8 +72,13 @@ export const createCheckoutSession = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Server error" });
+        console.error("Stripe checkout session error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong while creating checkout session",
+            stack: process.env.NODE_ENV === "development" ? error.stack : undefined, // Optional: Only show stack trace in dev
+        });
     }
 };
 

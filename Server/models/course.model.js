@@ -23,7 +23,7 @@ const courseSchema = new mongoose.Schema({
         enum:["Beginner","Intermediate","Advance"]
     },
     coursePrice:{
-        type:Number
+        type:Number,
     },
     enrolledStudents:[
         {
