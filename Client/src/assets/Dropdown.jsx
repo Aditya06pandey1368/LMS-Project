@@ -67,10 +67,12 @@ export function Dropdown() {
         ) : (
           <DropdownMenuItem onClick={() => navigate("/login")}>Log In</DropdownMenuItem>
         )}
-
+        
+        {user?.role === "instructor" && (
         <DropdownMenuItem>
-          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/admin/dashboard">Dashboard</Link>
         </DropdownMenuItem>
+      )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

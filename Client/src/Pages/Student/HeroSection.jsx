@@ -1,8 +1,9 @@
 // HeroSection.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
     const ref = useRef(null);
@@ -10,6 +11,15 @@ const HeroSection = () => {
     const scale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
     const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
 
+    const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate();
+    const searchHandler = (e) => {
+        e.preventDefault();
+        if(searchQuery.trim() !== ""){
+            navigate(`/course/search?query=${searchQuery}`)
+        }
+        setSearchQuery("");
+    }
 
     return (
         <motion.section
@@ -32,22 +42,28 @@ const HeroSection = () => {
                         Learn something new every day. Dive into world-class courses crafted for curious minds and future leaders.
                     </p>
 
-                    <div className="flex items-center justify-center md:justify-start gap-3">
-                        <input
-                            type="text"
-                            placeholder="Search for courses..."
-                            className="w-full sm:w-3/5 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        />
-                        <button className="flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all">
-                            <Search className="w-5 h-5" />
-                            <span className="hidden md:inline ml-2">Search</span>
-                        </button>
-                    </div>
+                    <form onSubmit={searchHandler}>
+                        <div className="flex items-center justify-center md:justify-start gap-3">
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search for courses..."
+                                className="w-full sm:w-3/5 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            <button type='submit' className="flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all">
+                                <Search className="w-5 h-5" />
+                                <span className="hidden md:inline ml-2">Search</span>
+                            </button>
+                        </div>
+                    </form>
 
                     <div>
-                        <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl shadow transition-all">
-                            Explore Courses
-                        </button>
+                        <Link to={`/course/search?query`}>
+                            <button  className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl shadow transition-all">
+                                Explore Courses
+                            </button>
+                        </Link>
                     </div>
                 </motion.div>
 

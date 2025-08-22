@@ -145,7 +145,7 @@ export default function EditCourse() {
               {course && (
                 <div className="flex items-center space-x-2">
                   <Switch
-                    disabled={course.lectures.length===0}
+                    disabled={course.lectures.length === 0}
                     checked={course.isPublished}
                     onCheckedChange={(checked) =>
                       publishStatusHandler(checked ? "true" : "false")
@@ -233,9 +233,16 @@ export default function EditCourse() {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="web">Web Development</SelectItem>
-                  <SelectItem value="data">Data Science</SelectItem>
-                  <SelectItem value="ai">Artificial Intelligence</SelectItem>
+                  <SelectItem value="android">Android Development</SelectItem>
+                  <SelectItem value="database">Database</SelectItem>
+                  <SelectItem value="ds">Data Science</SelectItem>
+                  <SelectItem value="dsa">Data Structures & Algorithms</SelectItem>
+                  <SelectItem value="git">Git and GitHub</SelectItem>
+                  <SelectItem value="java">Java</SelectItem>
+                  <SelectItem value="ml">Machine Learning</SelectItem>
+                  <SelectItem value="python">Python</SelectItem>
+                  <SelectItem value="uiux">UI/UX Design</SelectItem>
+                  <SelectItem value="webdev">Web Development</SelectItem>
                 </SelectContent>
               </Select>
             </div>

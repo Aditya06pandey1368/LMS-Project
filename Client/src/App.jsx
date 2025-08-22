@@ -18,6 +18,9 @@ import EditLecture from './Pages/Admin/lecture/EditLecture'
 import CourseDetail from './Pages/Student/CourseDetail'
 import HomePage from './Pages/Student/HomePage'
 import CourseProgress from './Pages/Student/CourseProgress'
+import SearchPage from './Pages/Student/SearchPage'
+import { AdminRoute, AuthenticatedUser, ProtectedRoute } from './components/ui/ProtectedRoutes'
+import PurchaseCourseProtectedRoute from './components/PurchaseCourseProtectedRoute'
 
 
 const appRouter = createBrowserRouter([
@@ -27,31 +30,39 @@ const appRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <HomePage/>
+        element: <HomePage />
       },
       {
         path: "login",
-        element: <Login />
+        element: <AuthenticatedUser><Login /></AuthenticatedUser>
       },
       {
         path: "my-learning",
-        element: <MyLearning />
+        element: <ProtectedRoute><MyLearning /></ProtectedRoute>
       },
       {
         path: "profile",
-        element: <StudentProfile />
+        element: <ProtectedRoute><StudentProfile /></ProtectedRoute>
       },
       {
         path: "course-detail/:courseId",
-        element: <CourseDetail />
+        element: <ProtectedRoute><CourseDetail /></ProtectedRoute>
       },
       {
         path: "/course-progress/:courseId",
-        element: <CourseProgress/>
+        element: <ProtectedRoute>
+                    <PurchaseCourseProtectedRoute>
+                      <CourseProgress />
+                    </PurchaseCourseProtectedRoute>
+                 </ProtectedRoute>
+      },
+      {
+        path: "course/search",
+        element: <ProtectedRoute><SearchPage /></ProtectedRoute>
       },
       {
         path: "admin",
-        element: <AdminSidebar />,
+        element: <AdminRoute><AdminSidebar /></AdminRoute>,
         children: [
           {
             path: "dashboard",
@@ -75,7 +86,7 @@ const appRouter = createBrowserRouter([
           },
           {
             path: "course/:courseId/lecture/:lectureId",
-            element: <EditLecture/>
+            element: <EditLecture />
           }
 
         ]

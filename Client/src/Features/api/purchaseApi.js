@@ -8,13 +8,15 @@ export const purchaseApi = createApi({
         baseUrl:COURSE_PURCHASE_API,
         credentials:'include'
     }),
+    tagTypes: ["PurchasedCourses"], // ✅ declare tag type
     endpoints:(builder) => ({
         createCheckoutSession : builder.mutation({
             query:(courseId) => ({
                 url:"/create-checkout-session",
                 method:"POST",
                 body:{courseId}
-            })
+            }),
+            invalidatesTags: ["PurchasedCourses"], // ✅ tell RTK to refresh purchased courses
         }),
         getCourseDetailWithStatus: builder.query({
             query:(courseId) => ({
@@ -25,10 +27,15 @@ export const purchaseApi = createApi({
         getPurchasedCourses:builder.query({
             query:() => ({
                 url:"/",
-                method:"GET"
-            })
+                method:"GET",
+            }),
+            providesTags: ["PurchasedCourses"], // ✅ enables auto refresh
         })
     })
 })
 
-export const {useCreateCheckoutSessionMutation, useGetCourseDetailWithStatusQuery, useGetPurchasedCoursesQuery} = purchaseApi;
+export const { 
+  useCreateCheckoutSessionMutation, 
+  useGetCourseDetailWithStatusQuery, 
+  useGetPurchasedCoursesQuery 
+} = purchaseApi;

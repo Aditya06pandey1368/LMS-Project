@@ -7,7 +7,8 @@ import userRoute from "./routes/user.route.js";
 import courseRoute from "./routes/course.route.js";
 import mediaRoute from "./routes/media.route.js";
 import coursePurchaseRoutes from "./routes/coursePurchase.route.js";
-import { stripeWebhook } from "./controllers/coursePurchase.controller.js";
+import { stripeWebhook } from "./Controllers/coursePurchase.controller.js";
+import courseProgressRoutes from "./routes/courseProgress.route.js";
 
 dotenv.config({});
 
@@ -39,6 +40,7 @@ app.use("/api/media", mediaRoute);
 app.use("/api/user", userRoute);
 app.use("/api/course", courseRoute);
 app.use("/api/course-purchase", coursePurchaseRoutes);
+app.use("/api/progress", courseProgressRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server listening at port ${PORT}`);

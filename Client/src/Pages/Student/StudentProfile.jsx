@@ -124,6 +124,14 @@ const StudentProfile = ({ enrolledCourses = [] }) => {
     );
   }
 
+  // ✅ Prefer prop if provided; else use Redux user.enrolledCourses
+  const resolvedEnrolledCourses =
+    (Array.isArray(enrolledCourses) && enrolledCourses.length > 0
+      ? enrolledCourses
+      : Array.isArray(userData?.enrolledCourses)
+      ? userData.enrolledCourses
+      : []) || [];
+
   return (
     <section className="px-10 sm:px-10 py-7 min-h-screen bg-white dark:bg-gray-900 transition-all">
       <motion.div
@@ -147,14 +155,17 @@ const StudentProfile = ({ enrolledCourses = [] }) => {
 
         <div className="flex flex-col sm:flex-row gap-3">
           {user && (
-            <Dialog open={dialogOpen} onOpenChange={(isOpen) => {
-              if (!isOpen) {
-                setAvatarPreview(originalAvatar);
-                setEditAvatar(null);
-                setEditName(userData?.name || "");
-              }
-              setDialogOpen(isOpen);
-            }}>
+            <Dialog
+              open={dialogOpen}
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  setAvatarPreview(originalAvatar);
+                  setEditAvatar(null);
+                  setEditName(userData?.name || "");
+                }
+                setDialogOpen(isOpen);
+              }}
+            >
               <DialogTrigger asChild>
                 <Button
                   className="bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -259,7 +270,7 @@ const StudentProfile = ({ enrolledCourses = [] }) => {
           Enrolled Courses
         </h3>
 
-        {enrolledCourses.length === 0 ? (
+        {resolvedEnrolledCourses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-indigo-300 rounded-lg dark:border-indigo-500">
             <img
               src="https://cdni.iconscout.com/illustration/premium/thumb/no-data-9435782-7703885.png"
@@ -272,9 +283,15 @@ const StudentProfile = ({ enrolledCourses = [] }) => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {enrolledCourses.map((course, index) => (
-              <CourseCard key={index} {...course} />
-            ))}
+            {resolvedEnrolledCourses
+              .filter(Boolean) // guard against undefined/null items
+              .map((course, index) => (
+                <CourseCard
+                  key={course?._id || course?.id || index} // safe key
+                  course={course}                            // pass as `course` prop for components expecting it
+                  {...course}                                // still spread in case your card expects flat props
+                />
+              ))}
           </div>
         )}
       </motion.div>

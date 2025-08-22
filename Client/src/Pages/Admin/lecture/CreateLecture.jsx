@@ -14,6 +14,9 @@ import { Loader2, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
+// ✅ Use same API base as in EditLecture.jsx
+const MEDIA_API = "http://localhost:3001/api/media";
+
 export default function CreateLecture() {
   const navigate = useNavigate();
   const { courseId } = useParams();
@@ -52,6 +55,7 @@ export default function CreateLecture() {
     navigate("/admin/course");
   };
 
+  // ✅ Fixed: Correct API endpoint for video upload
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -63,7 +67,7 @@ export default function CreateLecture() {
       setMediaUploading(true);
       setUploadProgress(0);
 
-      const res = await axios.post("/api/media/upload-video", formData, {
+      const res = await axios.post(`${MEDIA_API}/upload-video`, formData, {
         onUploadProgress: ({ loaded, total }) => {
           setUploadProgress(Math.round((loaded * 100) / total));
         },

@@ -73,10 +73,16 @@ export default function AddCourse() {
                         <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent className="dark:bg-gray-800">
-                        <SelectItem value="webdev">Web Development</SelectItem>
+                        <SelectItem value="android">Android Development</SelectItem>
+                        <SelectItem value="ds">Database</SelectItem>
+                        <SelectItem value="database">Data Science</SelectItem>
                         <SelectItem value="dsa">Data Structures & Algorithms</SelectItem>
+                        <SelectItem value="git">Git and GitHub</SelectItem>
+                        <SelectItem value="java">Java</SelectItem>
                         <SelectItem value="ml">Machine Learning</SelectItem>
+                        <SelectItem value="python">Python</SelectItem>
                         <SelectItem value="uiux">UI/UX Design</SelectItem>
+                        <SelectItem value="webdev">Web Development</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

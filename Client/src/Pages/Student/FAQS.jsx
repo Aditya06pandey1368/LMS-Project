@@ -14,10 +14,9 @@ const faqs = [
 const FAQs = () => {
   const ref = useRef(null);
 
-  // Match timing with OurCourses for smooth transition
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.9", "start start"], 
+    offset: ["start 0.9", "start start"],
   });
 
   const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
@@ -29,69 +28,80 @@ const FAQs = () => {
   };
 
   return (
-    <motion.section
-      ref={ref}
-      style={{ scale, opacity }}
-      className="min-h-screen px-6 py-12 md:px-12 lg:px-32 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors"
-    >
-      <h2 className="text-4xl  py-2 font-extrabold text-center mb-12 mt-5 tracking-tight leading-tight">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-600">
-          Frequently Asked
-        </span>{" "}
-        <span className="block">Questions</span>
-      </h2>
+    <>
+      {/* FAQs Section */}
+      <motion.section
+        ref={ref}
+        style={{ scale, opacity }}
+        className="min-h-screen px-6 py-12 md:px-12 lg:px-32 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors"
+      >
+        <h2 className="text-4xl py-2 font-extrabold text-center mb-12 mt-5 tracking-tight leading-tight">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-600">
+            Frequently Asked
+          </span>{" "}
+          <span className="block">Questions</span>
+        </h2>
 
-      <div className="space-y-4">
-        {faqs.map((faq, index) => (
-          <div
-            key={index}
-            className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
-          >
-            <button
-              onClick={() => toggleFaq(index)}
-              className="flex justify-between items-center w-full px-6 py-4 text-left text-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div
+              key={index}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
             >
-              {faq.question}
-              <motion.span
-                animate={{ rotate: openIndex === index ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
+              <button
+                onClick={() => toggleFaq(index)}
+                className="flex justify-between items-center w-full px-6 py-4 text-left text-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
-                <ChevronDown className="w-5 h-5" />
-              </motion.span>
-            </button>
-
-            <AnimatePresence initial={false}>
-              {openIndex === index && (
-                <motion.div
-                  key="answer"
-                  initial={{ height: 0, opacity: 0, y: -5 }}
-                  animate={{ height: "auto", opacity: 1, y: 0 }}
-                  exit={{ height: 0, opacity: 0, y: -5 }}
-                  transition={{
-                    duration: 0.45,
-                    ease: [0.25, 0.1, 0.25, 1], // smooth cubic-bezier easing
-                  }}
-                  className="overflow-hidden"
+                {faq.question}
+                <motion.span
+                  animate={{ rotate: openIndex === index ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
                 >
+                  <ChevronDown className="w-5 h-5" />
+                </motion.span>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {openIndex === index && (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    key="answer"
+                    initial={{ height: 0, opacity: 0, y: -5 }}
+                    animate={{ height: "auto", opacity: 1, y: 0 }}
+                    exit={{ height: 0, opacity: 0, y: -5 }}
                     transition={{
-                      delay: 0.1,
-                      duration: 0.3,
+                      duration: 0.45,
+                      ease: [0.25, 0.1, 0.25, 1],
                     }}
-                    className="px-6 pb-4 text-gray-600 dark:text-gray-300"
+                    className="overflow-hidden"
                   >
-                    {faq.answer}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        delay: 0.1,
+                        duration: 0.3,
+                      }}
+                      className="px-6 pb-4 text-gray-600 dark:text-gray-300"
+                    >
+                      {faq.answer}
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
-      </div>
-    </motion.section>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+      </motion.section>
+
+      
+
+        {/* Bottom bar */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 border-t border-white/20 text-center py-4 text-sl text-gray-200">
+          © {new Date().getFullYear()} LMS Portal. All rights reserved.
+        </div>
+
+    </>
   );
 };
 

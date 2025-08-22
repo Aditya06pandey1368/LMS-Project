@@ -40,7 +40,7 @@ const Navbar = () => {
   }, [isSuccess]);
 
   return (
-    <div className='h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-gray-800 border-gray-200 fixed top-0 left-0 right-0 duration-300 z-50'>
+    <div className='h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-gray-900 border-gray-200 fixed top-0 left-0 right-0 duration-300 z-50'>
       <div className='max-w-7xl mx-auto flex justify-between items-center h-full px-4'>
         {/* Logo and title */}
         <div className='flex items-center gap-2'>
