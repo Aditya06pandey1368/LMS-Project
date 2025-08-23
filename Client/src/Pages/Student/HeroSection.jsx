@@ -15,7 +15,7 @@ const HeroSection = () => {
     const navigate = useNavigate();
     const searchHandler = (e) => {
         e.preventDefault();
-        if(searchQuery.trim() !== ""){
+        if (searchQuery.trim() !== "") {
             navigate(`/course/search?query=${searchQuery}`)
         }
         setSearchQuery("");
@@ -35,9 +35,17 @@ const HeroSection = () => {
                     transition={{ duration: 0.7, ease: 'easeOut' }}
                     className="space-y-6 text-center md:text-left"
                 >
-                    <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-white leading-tight">
+                    <h1
+                        className="text-4xl sm:text-5xl font-extrabold
+             bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+             bg-clip-text text-transparent
+             drop-shadow-md
+             leading-tight
+             animate-fade-in"
+                    >
                         Unlock Your Potential with LearnHub
                     </h1>
+
                     <p className="text-gray-700 dark:text-gray-300 text-lg">
                         Learn something new every day. Dive into world-class courses crafted for curious minds and future leaders.
                     </p>
@@ -60,7 +68,7 @@ const HeroSection = () => {
 
                     <div>
                         <Link to={`/course/search?query`}>
-                            <button  className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl shadow transition-all">
+                            <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl shadow transition-all">
                                 Explore Courses
                             </button>
                         </Link>

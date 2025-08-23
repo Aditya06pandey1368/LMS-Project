@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -11,10 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PlayCircle, Lock, Info } from "lucide-react";
 import { motion } from "framer-motion";
-import ReactPlayer from "react-player";
-import BuyCourseButton from "./BuyCourseButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetCourseDetailWithStatusQuery } from "@/Features/api/purchaseApi";
+import BuyCourseButton from "./BuyCourseButton";
 
 export default function CourseDetail() {
   const params = useParams();
@@ -22,6 +21,9 @@ export default function CourseDetail() {
   const navigate = useNavigate();
 
   const { data, isLoading, isError } = useGetCourseDetailWithStatusQuery(courseId);
+
+  // 🔹 State to track which preview video is currently playing
+  const [currentPreview, setCurrentPreview] = useState(null);
 
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Failed to load course details</h1>;
@@ -32,7 +34,15 @@ export default function CourseDetail() {
     if (purchased || course.coursePrice === undefined) {
       navigate(`/course-progress/${courseId}`)
     }
-  }
+  };
+
+  // 🔹 Handle preview selection
+  const handlePreviewClick = (lecture) => {
+    if (lecture.isPreviewFree) {
+      setCurrentPreview(lecture); // only update if it's a free preview
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-white dark:bg-black text-gray-900 dark:text-white p-6 md:p-10 space-y-10 transition-colors duration-500">
       {/* Section 1 */}
@@ -60,19 +70,22 @@ export default function CourseDetail() {
 
       {/* Section 2 */}
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Section 2a */}
+        {/* Section 2a - Course Content */}
         <motion.div
           className="flex-1 space-y-6"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          {course.description ? (
+          {course.description && (
             <div>
               <h2 className="text-2xl font-bold mb-2">Description</h2>
-              <p className="text-base text-muted-foreground" dangerouslySetInnerHTML={{ __html: course.description }} />
+              <p
+                className="text-base text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: course.description }}
+              />
             </div>
-          ) : ("")}
+          )}
 
           {/* Course Content Card */}
           <Card className="bg-muted/10 dark:bg-muted/20">
@@ -82,9 +95,19 @@ export default function CourseDetail() {
             </CardHeader>
             <CardContent className="space-y-3">
               {course.lectures.map((lecture) => (
-                <div key={lecture._id} className="flex items-center gap-2">
+                <div
+                  key={lecture._id}
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => handlePreviewClick(lecture)}
+                >
                   {lecture.isPreviewFree ? (
-                    <PlayCircle className="text-green-500" />
+                    <PlayCircle
+                      className={`${
+                        currentPreview?._id === lecture._id
+                          ? "text-green-700"
+                          : "text-green-500"
+                      }`}
+                    />
                   ) : (
                     <Lock className="text-red-500" />
                   )}
@@ -96,71 +119,45 @@ export default function CourseDetail() {
         </motion.div>
 
         {/* Section 2b - Video Player */}
-        {/* Section 2b - Video Player (only if video exists) */}
-        {course?.lectures?.[0]?.videoUrl ? (
-          <motion.div
-            className="lg:w-1/3 space-y-4"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-          > 
-             
-            <Card className="overflow-hidden">
-              {course.lectures[0].isPreviewFree ? (
-              <div className="aspect-video bg-gray-200 dark:bg-gray-900 relative pl-6 pr-6" >
-                {!isLoading && course?.lectures?.[0]?.videoUrl && (
-                  <video
-                    src={course.lectures[0].videoUrl}
-                    controls
-                    style={{ width: "100%", height: "auto", borderRadius: "8px" }}
-                  />
+        <motion.div
+          className="lg:w-1/3 space-y-4"
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <Card className="overflow-hidden">
+            {currentPreview?.videoUrl ? (
+              <div className="aspect-video bg-gray-200 dark:bg-gray-900 relative pl-6 pr-6">
+                <video
+                  src={currentPreview.videoUrl}
+                  controls
+                  style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+                />
+              </div>
+            ) : (
+              <div className="aspect-video flex items-center justify-center text-gray-400 dark:text-gray-600">
+                Select a free preview lecture to watch
+              </div>
+            )}
 
+            <CardContent>
+              <p className="text-lg font-semibold">{course.courseTitle}</p>
+              <Separator className="mb-3" />
+              <div className="flex items-center justify-between flex-wrap">
+                <span className="text-xl font-bold">
+                  {course.coursePrice ?? "Free"}
+                </span>
+                {(purchased ||
+                  course.coursePrice === undefined ||
+                  course.coursePrice === "Free") ? (
+                  <Button onClick={handleContinueCourse}>Continue Course</Button>
+                ) : (
+                  <BuyCourseButton courseId={courseId} />
                 )}
-
-              </div>) : ("")}
-              <CardContent>
-                <p className="text-lg font-semibold">{course.courseTitle}</p>
-                <Separator className="mb-3" />
-                <div className="flex items-center justify-between flex-wrap">
-                  <span className="text-xl font-bold">
-                    {course.coursePrice ?? "Free"}
-                  </span>
-                  {(purchased || course.coursePrice === undefined || course.coursePrice === "Free") ? (
-                    <Button onClick={handleContinueCourse}>Continue Course</Button>
-                  ) : (
-                    <BuyCourseButton courseId={courseId} />
-                  )}
-                </div>
-
-              </CardContent>
-            </Card>
-        
-            
-          </motion.div>
-        ) : (
-          <motion.div
-            className="lg:w-1/3 space-y-4"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <Card className="overflow-hidden">
-              <CardContent className="pt-4">
-                <p className="text-lg font-semibold">{course.courseTitle}</p>
-                <Separator className="mb-4" />
-                <div className="flex items-center justify-between flex-wrap">
-                  <span className="text-xl font-bold">{course.coursePrice ? course.coursePrice : "Free"}</span>
-                  {(purchased || course.coursePrice === undefined || course.coursePrice === "Free") ? (
-                    <Button onClick={handleContinueCourse}>Continue Course</Button>
-                  ) : (
-                    <BuyCourseButton courseId={courseId} />
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );

@@ -266,9 +266,18 @@ const StudentProfile = ({ enrolledCourses = [] }) => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
-          Enrolled Courses
-        </h3>
+        <h3
+  className="text-2xl md:text-3xl font-extrabold text-center
+             bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 
+             bg-clip-text text-transparent 
+             drop-shadow-sm 
+             tracking-wide 
+             mb-6 animate-fade-in"
+>
+  Enrolled Courses
+</h3>
+
+
 
         {resolvedEnrolledCourses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-indigo-300 rounded-lg dark:border-indigo-500">

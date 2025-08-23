@@ -38,9 +38,18 @@ const MyLearning = () => {
 
   return (
     <section className="px-6 md:px-10 py-10 min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
-      <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-10 mt-20">
+      <h2
+        className="text-4xl md:text-5xl font-extrabold text-center 
+                  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 
+                  bg-clip-text text-transparent 
+                  drop-shadow-md 
+                  tracking-wide 
+                  mb-10 mt-20 
+                  animate-fade-in"
+      >
         My Learnings
       </h2>
+
 
       {/* Loading: show skeleton grid */}
       {isLoading ? (
