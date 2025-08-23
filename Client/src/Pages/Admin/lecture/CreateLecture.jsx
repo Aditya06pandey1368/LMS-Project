@@ -1,5 +1,4 @@
 // Pages/Admin/lecture/CreateLecture.jsx
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,6 @@ import { Loader2, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-// ✅ Use same API base as in EditLecture.jsx
 const MEDIA_API = "http://localhost:3001/api/media";
 
 export default function CreateLecture() {
@@ -40,22 +38,23 @@ export default function CreateLecture() {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Lecture created successfully.");
+      // ✅ clear form inputs after creating lecture
       setLectureTitle("");
       setVideoInfo(null);
       setUploadProgress(0);
       setIsPreviewFree(false);
+      // ✅ refetch lectures list
       refetch();
     }
     if (error) {
       toast.error(error?.data?.message || "Something went wrong.");
     }
-  }, [isSuccess, error]);
+  }, [isSuccess, error, refetch]);
 
   const handleBack = () => {
     navigate("/admin/course");
   };
 
-  // ✅ Fixed: Correct API endpoint for video upload
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -114,6 +113,24 @@ export default function CreateLecture() {
 
   const updateLectures = (lectureId) => {
     navigate(`/admin/course/${courseId}/lecture/${lectureId}`);
+  };
+
+  // ✅ Animations
+  const listVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 80, damping: 15 },
+    },
   };
 
   return (
@@ -238,20 +255,15 @@ export default function CreateLecture() {
 
         {!lectureLoading && lectureData?.lectures?.length > 0 && (
           <motion.div
+            variants={listVariants}
             initial="hidden"
             animate="visible"
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.1 } },
-            }}
             className="space-y-4"
           >
             {lectureData.lectures.map((lecture, index) => (
               <motion.div
                 key={lecture._id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                variants={itemVariants}
                 className="border rounded-xl p-5 flex items-center justify-between shadow-sm hover:shadow-lg"
               >
                 <h3 className="text-lg sm:text-xl font-semibold">

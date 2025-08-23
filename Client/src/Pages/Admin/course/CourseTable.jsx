@@ -9,9 +9,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Pencil } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useGetCreatorCoursesQuery } from "@/Features/api/courseApi";
+import { useRef } from "react";
 
 export default function CourseTable() {
   const { data, isLoading } = useGetCreatorCoursesQuery(undefined, {
@@ -19,20 +20,35 @@ export default function CourseTable() {
   });
 
   const navigate = useNavigate();
+
+  // Scroll zoom + fade effect
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["0 1", "1.2 1"], // start when enters viewport, end after leaving
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1]); // zoom in
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1]); // fade in
+
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
-    <div className="min-h-screen w-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors px-4 py-6 md:px-8 pt-[60px]">
+    <motion.div
+      ref={ref}
+      style={{ scale, opacity }}
+      className="min-h-screen w-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors px-4 py-6 md:px-8 pt-[30px]"
+    >
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <Button onClick={() => navigate('create')}>Create a New Course</Button>
+        <Button onClick={() => navigate("create")}>Create a New Course</Button>
       </div>
 
       {/* Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.8 }}
         className="w-full overflow-x-auto"
       >
         <Table className="w-full table-auto">
@@ -48,8 +64,12 @@ export default function CourseTable() {
             {data?.courses?.length > 0 ? (
               data.courses.map((course) => (
                 <TableRow key={course._id} className="hover:bg-muted/50">
-                  <TableCell className="px-6 py-4">{course.courseTitle}</TableCell>
-                  <TableCell className="px-6 py-4">{course?.coursePrice || "Free"}</TableCell>
+                  <TableCell className="px-6 py-4">
+                    {course.courseTitle}
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
+                    {course?.coursePrice || "Free"}
+                  </TableCell>
                   <TableCell className="px-6 py-4">
                     <Badge
                       className={
@@ -83,6 +103,6 @@ export default function CourseTable() {
           </TableBody>
         </Table>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

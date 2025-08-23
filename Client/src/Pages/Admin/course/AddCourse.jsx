@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useCreateCourseMutation } from "@/Features/api/courseApi";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AddCourse() {
     const [courseTitle, setCourseTitle] = useState("");
@@ -24,7 +25,8 @@ export default function AddCourse() {
 
     const getSelectedCategory = (value) => {
         setCategory(value);
-    }
+    };
+
     const createCourseHandler = async () => {
         await createCourse({ courseTitle, category });
     };
@@ -40,17 +42,30 @@ export default function AddCourse() {
         }
     }, [isSuccess, error]);
 
-
-
     return (
-        <div className="max-w-2xl mx-auto px-10 py-8 space-y-6">
+        <motion.div
+            className="max-w-2xl mx-auto px-10 py-8 space-y-6"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+        >
             {/* Page Heading */}
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mt-15">
+            <motion.h1
+                className="text-3xl font-bold text-gray-800 dark:text-gray-100 mt-15"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+            >
                 Add a New Course
-            </h1>
+            </motion.h1>
 
             {/* Title */}
-            <div className="space-y-2">
+            <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+            >
                 <Label htmlFor="title" className="text-lg">
                     Title
                 </Label>
@@ -61,10 +76,15 @@ export default function AddCourse() {
                     placeholder="Enter course title"
                     className="bg-white dark:bg-gray-800 dark:text-white"
                 />
-            </div>
+            </motion.div>
 
             {/* Category */}
-            <div className="space-y-2">
+            <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+            >
                 <Label htmlFor="category" className="text-lg">
                     Category
                 </Label>
@@ -85,22 +105,37 @@ export default function AddCourse() {
                         <SelectItem value="webdev">Web Development</SelectItem>
                     </SelectContent>
                 </Select>
-            </div>
+            </motion.div>
 
             {/* Buttons */}
-            <div className="flex justify-between pt-5">
-                <Button variant="outline" onClick={() => navigate("/admin/course")}>Back</Button>
-                <Button disabled={isLoading} onClick={createCourseHandler}>
-                    {
-                        isLoading ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Please Wait
-                            </>
-                        ) : "Create"
-                    }
+            <motion.div
+                className="flex justify-between pt-5"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+            >
+                <Button
+                    variant="outline"
+                    onClick={() => navigate("/admin/course")}
+                    className="transition-transform duration-200 hover:scale-105"
+                >
+                    Back
                 </Button>
-            </div>
-        </div>
+                <Button
+                    disabled={isLoading}
+                    onClick={createCourseHandler}
+                    className="transition-transform duration-200 hover:scale-105"
+                >
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Please Wait
+                        </>
+                    ) : (
+                        "Create"
+                    )}
+                </Button>
+            </motion.div>
+        </motion.div>
     );
 }

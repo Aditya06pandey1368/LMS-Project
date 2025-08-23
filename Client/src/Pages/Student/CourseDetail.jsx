@@ -103,8 +103,10 @@ export default function CourseDetail() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
-          >
+          > 
+             
             <Card className="overflow-hidden">
+              {course.lectures[0].isPreviewFree ? (
               <div className="aspect-video bg-gray-200 dark:bg-gray-900 relative pl-6 pr-6" >
                 {!isLoading && course?.lectures?.[0]?.videoUrl && (
                   <video
@@ -115,7 +117,7 @@ export default function CourseDetail() {
 
                 )}
 
-              </div>
+              </div>) : ("")}
               <CardContent>
                 <p className="text-lg font-semibold">{course.courseTitle}</p>
                 <Separator className="mb-3" />
@@ -132,6 +134,8 @@ export default function CourseDetail() {
 
               </CardContent>
             </Card>
+        
+            
           </motion.div>
         ) : (
           <motion.div

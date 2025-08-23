@@ -38,9 +38,9 @@ export default function Dashboard() {
   console.log(purchasedCourse.length);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 space-y-5">
       {/* Stats cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Total Sales */}
         <motion.div whileHover={{ scale: 1.05 }}>
           <Card className="shadow-lg rounded-2xl">
