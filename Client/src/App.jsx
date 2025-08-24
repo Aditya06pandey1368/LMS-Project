@@ -21,6 +21,7 @@ import CourseProgress from './Pages/Student/CourseProgress'
 import SearchPage from './Pages/Student/SearchPage'
 import { AdminRoute, AuthenticatedUser, ProtectedRoute } from './components/ui/ProtectedRoutes'
 import PurchaseCourseProtectedRoute from './components/PurchaseCourseProtectedRoute'
+import MockTest from './Pages/Student/MockTest'
 
 
 const appRouter = createBrowserRouter([
@@ -59,6 +60,10 @@ const appRouter = createBrowserRouter([
       {
         path: "course/search",
         element: <ProtectedRoute><SearchPage /></ProtectedRoute>
+      },
+      {
+        path:"/mock-test/:courseId",
+        element: <MockTest></MockTest>
       },
       {
         path: "admin",

@@ -6,7 +6,7 @@ import { CheckCircle2, CirclePlay } from "lucide-react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import { useCompleteCourseMutation, useGetCourseProgressQuery, useIncompleteCourseMutation, useUpdateLectureProgressMutation } from "@/Features/api/courseProgressApi";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 // This is fine as a fallback, but the state should come from your API data  
 const initialLectures = [
@@ -24,8 +24,8 @@ export default function CourseProgress() {
         courseId
     );
     const [updateLectureProgress] = useUpdateLectureProgressMutation();
-    const [completeCourse, {data:markCompleteData, isSuccess:completedSuccess}] = useCompleteCourseMutation();
-    const [incompleteCourse, {data:markIncompleteData, isSuccess:incompletedSuccess}] = useIncompleteCourseMutation();
+    const [completeCourse, { data: markCompleteData, isSuccess: completedSuccess }] = useCompleteCourseMutation();
+    const [incompleteCourse, { data: markIncompleteData, isSuccess: incompletedSuccess }] = useIncompleteCourseMutation();
 
     // MOVED these useState hooks up here, before any conditions or returns
     const [lectures, setLectures] = useState([]); // Start with empty array
@@ -72,7 +72,7 @@ export default function CourseProgress() {
         return progress.some((prog) => prog.lectureId === lectureId && prog.viewed)
     }
     const handleLectureProgress = async (lectureId) => {
-        await updateLectureProgress({courseId, lectureId});
+        await updateLectureProgress({ courseId, lectureId });
         refetch();
     }
 
@@ -123,14 +123,33 @@ export default function CourseProgress() {
                     {/* Section B */}
                     <section className="md:w-1/2 flex mt-5 flex-col gap-6">
                         <Button
-                            onClick={completed? handleIncompleteCourse : handleCompleteCourse}
+                            onClick={completed ? handleIncompleteCourse : handleCompleteCourse}
                             className={`self-start ${allCompleted
-                                ? "bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                                : "bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                                    ? "bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+                                    : "bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
                                 } text-white transition-colors`}
                         >
                             {completed ? "Mark as incomplete" : "Mark as completed"}
                         </Button>
+
+                        {/* 👇 Show Mock Test only if the course is completed */}
+                        {completed && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="flex flex-col gap-4 mt-4"
+                            >
+                                <p className="text-lg text-gray-800 dark:text-gray-300">
+                                    Take the test to earn your certificate 🎓
+                                </p>
+                                <Link to={`/mock-test/${courseId}`} state={{ courseTitle }}>
+                                    <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg">
+                                        Start Mock Test
+                                    </Button>
+                                </Link>
+                            </motion.div>
+                        )}
 
                         <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                             Course Lectures
@@ -143,7 +162,7 @@ export default function CourseProgress() {
                                     whileHover={{ scale: 1.05 }}
                                     className="cursor-pointer"
                                 >
-                                    <Card className={`flex justify-between px-6 py-4 w-full ${lecture._id === currentLecture?._id ? 'bg-gray-500' :' dark:bg-gray-900'}`} onClick={() => handleSelectLecture(lecture)}>
+                                    <Card className={`flex justify-between px-6 py-4 w-full ${lecture._id === currentLecture?._id ? 'bg-gray-500' : ' dark:bg-gray-900'}`} onClick={() => handleSelectLecture(lecture)}>
                                         <div className="flex justify-between gap-3">
                                             <div className="flex gap-2">
                                                 {isLectureCompleted(lecture._id) ? (
