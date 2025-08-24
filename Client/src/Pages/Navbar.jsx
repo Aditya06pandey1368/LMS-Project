@@ -90,7 +90,9 @@ const Navbar = () => {
                   )}
                 </nav>
                 {role === "instructor" && (
+                  <Link to="/admin/dashboard">
                   <Button className="m-10">DashBoard</Button>
+                  </Link>
                 )}
               </div>
             </SheetContent>

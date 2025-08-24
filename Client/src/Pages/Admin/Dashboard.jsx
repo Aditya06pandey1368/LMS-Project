@@ -38,7 +38,7 @@ export default function Dashboard() {
   console.log(purchasedCourse.length);
 
   return (
-    <div className="p-4 space-y-5">
+    <div className="space-y-5">
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Total Sales */}
