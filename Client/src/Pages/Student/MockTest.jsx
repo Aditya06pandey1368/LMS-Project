@@ -5,7 +5,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { useStartMockTestMutation, useSaveAnswerMutation, useSubmitMockTestMutation } from "@/Features/api/mockTestApi";
+import {
+  useStartMockTestMutation,
+  useSaveAnswerMutation,
+  useSubmitMockTestMutation,
+} from "@/Features/api/mockTestApi";
 import { CheckCircle2, TimerReset } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -15,9 +19,11 @@ export default function MockTest() {
   const { state } = useLocation(); // state?.courseTitle from CourseProgress Link
   const courseTitle = state?.courseTitle || "Course";
 
-  const [startMockTest, { data: startData, isLoading: starting }] = useStartMockTestMutation();
+  const [startMockTest, { data: startData, isLoading: starting }] =
+    useStartMockTestMutation();
   const [saveAnswer, { isLoading: saving }] = useSaveAnswerMutation();
-  const [submitMockTest, { data: submitData, isLoading: submitting }] = useSubmitMockTestMutation();
+  const [submitMockTest, { data: submitData, isLoading: submitting }] =
+    useSubmitMockTestMutation();
 
   const [session, setSession] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -34,8 +40,12 @@ export default function MockTest() {
         setRemaining(res.data.remainingSeconds || 15 * 60);
 
         // If user has previous answers, resume at next unanswered
-        const answered = new Set((res.data.answers || []).map(a => a.questionIndex));
-        const firstUnanswered = (res.data.questions || []).findIndex((_, idx) => !answered.has(idx));
+        const answered = new Set(
+          (res.data.answers || []).map((a) => a.questionIndex)
+        );
+        const firstUnanswered = (res.data.questions || []).findIndex(
+          (_, idx) => !answered.has(idx)
+        );
         setCurrentIndex(firstUnanswered >= 0 ? firstUnanswered : 0);
       } catch (e) {
         toast.error(e?.data?.message || "Failed to start test");
@@ -61,14 +71,17 @@ export default function MockTest() {
     return () => clearInterval(timerRef.current);
   }, [session]);
 
-  const question = useMemo(() => session?.questions?.[currentIndex], [session, currentIndex]);
+  const question = useMemo(
+    () => session?.questions?.[currentIndex],
+    [session, currentIndex]
+  );
   const total = session?.questions?.length || 10;
-  const pct = Math.round(((currentIndex) / total) * 100);
+  const pct = Math.round((currentIndex / total) * 100);
   const mm = String(Math.floor(remaining / 60)).padStart(2, "0");
   const ss = String(remaining % 60).padStart(2, "0");
 
   const handleSelect = (idx) => {
-    setSelected(idx); // turn selected green immediately
+    setSelected(idx); // turn selected yellow immediately
   };
 
   const handleSaveNext = async () => {
@@ -99,20 +112,34 @@ export default function MockTest() {
   const handleSubmit = async (auto = false) => {
     try {
       const res = await submitMockTest({ sessionId: session._id }).unwrap();
-      setSession((prev) => ({ ...prev, status: res.data.status, score: res.data.score }));
+      setSession((prev) => ({
+        ...prev,
+        status: res.data.status,
+        score: res.data.score,
+      }));
       if (auto) toast("Time's up! Auto-submitted.", { icon: "⏱️" });
     } catch (e) {
       toast.error(e?.data?.message || "Failed to submit");
     }
   };
 
+  // Motivational messages
+  const getMessage = (s) => {
+    if (s === 100) return "Perfect! You're unstoppable 🔥";
+    if (s >= 90) return "Outstanding! Keep pushing boundaries ✨";
+    if (s >= 80) return "Great job! You’re almost at mastery 💡";
+    if (s >= 70) return "Nice work! Keep practicing ⚡";
+    if (s >= 50) return "Good effort! You’re improving 🌱";
+    if (s >= 30) return "Keep going, small steps matter 🌻"; 
+    return "Don’t give up — try again 💪";
+  };
+
   // Score screen
   if (session && (session.status === "submitted" || session.status === "expired")) {
     const score = session.score ?? 0;
-    const pass = score >= 50;
 
     return (
-      <div className="min-h-screen pt-20 p-4 md:p-10 bg-white dark:bg-gray-950">
+      <div className="min-h-screen mt-15 pt-20 p-4 md:p-10 bg-white dark:bg-gray-950">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -123,8 +150,8 @@ export default function MockTest() {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {courseTitle} Test — Result
               </h1>
-              <Badge className={pass ? "bg-green-600" : "bg-red-600"}>
-                {pass ? "Passed" : "Failed"}
+              <Badge className={score >= 50 ? "bg-green-600" : "bg-red-600"}>
+                {score >= 50 ? "Passed" : "Failed"}
               </Badge>
             </div>
 
@@ -135,29 +162,14 @@ export default function MockTest() {
               <Progress value={score} className="h-3" />
             </div>
 
-            {pass ? (
-              <div className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  Great job! You’ve qualified for the certificate. 🎓
-                </p>
-                {/* We will wire this in the next step */}
-                <Button
-                  className="w-full md:w-auto"
-                  onClick={() => navigate("/certificate", { state: { courseId, courseTitle } })}
-                >
-                  Download Certificate
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  You can review the course and try again later.
-                </p>
-                <Button variant="outline" onClick={() => navigate(-1)}>
-                  Back to Course
-                </Button>
-              </div>
-            )}
+            <div className="space-y-4 text-center">
+              <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                {getMessage(score)}
+              </p>
+              <Button variant="outline" onClick={() => navigate(-1)}>
+                Back to Course
+              </Button>
+            </div>
           </Card>
         </motion.div>
       </div>
@@ -165,7 +177,7 @@ export default function MockTest() {
   }
 
   return (
-    <div className="min-h-screen pt-20 p-4 md:p-10 bg-white dark:bg-gray-950 transition-colors">
+    <div className="min-h-screen mt-10 pt-20 p-4 md:p-10 bg-white dark:bg-gray-950 transition-colors">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -177,7 +189,9 @@ export default function MockTest() {
           </h1>
           <div className="flex items-center gap-2 text-gray-800 dark:text-gray-200">
             <TimerReset className="w-5 h-5" />
-            <span className="font-mono">{mm}:{ss}</span>
+            <span className="font-mono">
+              {mm}:{ss}
+            </span>
           </div>
         </div>
 
@@ -188,9 +202,11 @@ export default function MockTest() {
               <span className="text-sm text-gray-700 dark:text-gray-300">
                 Question {currentIndex + 1} of {total}
               </span>
-              <Badge variant="secondary">{Math.round((currentIndex + 1) / total * 100)}%</Badge>
+              <Badge variant="secondary">
+                {Math.round(((currentIndex + 1) / total) * 100)}%
+              </Badge>
             </div>
-            <Progress value={((currentIndex) / total) * 100} className="h-2" />
+            <Progress value={(currentIndex / total) * 100} className="h-2" />
           </div>
 
           {/* Question */}
@@ -221,12 +237,18 @@ export default function MockTest() {
                         "bg-gray-50 dark:bg-gray-800",
                         "border-gray-200 dark:border-gray-700",
                         "hover:shadow-sm focus:outline-none",
-                        isSelected ? "ring-2 ring-green-500 bg-green-50 dark:bg-green-900/30" : "",
+                        isSelected
+                          ? "ring-2 ring-yellow-500 bg-yellow-50 dark:bg-yellow-900/30"
+                          : "",
                       ].join(" ")}
                     >
                       <div className="flex items-center gap-3">
-                        {isSelected && <CheckCircle2 className="w-5 h-5 text-green-600" />}
-                        <span className="text-gray-900 dark:text-gray-100">{opt}</span>
+                        {isSelected && (
+                          <CheckCircle2 className="w-5 h-5 text-yellow-600" />
+                        )}
+                        <span className="text-gray-900 dark:text-gray-100">
+                          {opt}
+                        </span>
                       </div>
                     </button>
                   );
@@ -235,11 +257,7 @@ export default function MockTest() {
 
               {/* Actions */}
               <div className="flex items-center justify-between pt-2">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate(-1)}
-                  className="rounded-xl"
-                >
+                <Button variant="outline" onClick={() => navigate(-1)} className="rounded-xl">
                   Exit
                 </Button>
 

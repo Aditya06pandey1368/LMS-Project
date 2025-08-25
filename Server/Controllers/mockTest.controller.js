@@ -1,3 +1,4 @@
+// server/controllers/mockTest.controller.js
 import { MockTestSession } from "../models/mockTest.model.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -68,7 +69,6 @@ async function generateQuestionsWithGemini(topic) {
   return sanitizeGemini(parsed);
 }
 
-
 // Remove correct keys before sending to client
 function clientSessionView(doc) {
   const remaining = doc.remainingSeconds();
@@ -102,7 +102,6 @@ function computeScore(session) {
 // POST /api/mocktests/start
 export const startMockTest = async (req, res) => {
   try {
-
     const userId = req.id;
     const { courseId, courseTitle } = req.body;
 
@@ -146,8 +145,6 @@ export const startMockTest = async (req, res) => {
   }
 };
 
-
-
 // POST /api/mocktests/answer
 export const saveAnswer = async (req, res) => {
   try {
@@ -175,7 +172,6 @@ export const saveAnswer = async (req, res) => {
     return res.status(500).json({ message: "Failed to save answer" });
   }
 };
-
 
 // POST /api/mocktests/submit
 export const submitMockTest = async (req, res) => {
@@ -215,7 +211,6 @@ export const submitMockTest = async (req, res) => {
   }
 };
 
-
 // GET /api/mocktests/:sessionId
 export const getSession = async (req, res) => {
   try {
@@ -236,3 +231,33 @@ export const getSession = async (req, res) => {
   }
 };
 
+// ✅ NEW: GET /api/mocktests/last/:courseId
+export const getLastMockTestForCourse = async (req, res) => {
+  try {
+    const userId = req.id;
+    const { courseId } = req.params;
+
+    const session = await MockTestSession.findOne({
+      user: userId,
+      course: courseId,
+      status: { $in: ["submitted", "expired"] },
+    })
+      .sort({ submittedAt: -1, updatedAt: -1, startedAt: -1 })
+      .lean();
+
+    if (!session) {
+      return res.json({ data: null });
+    }
+
+    return res.json({
+      data: {
+        score: session.score ?? 0,
+        status: session.status,
+        submittedAt: session.submittedAt || session.updatedAt || session.startedAt,
+      },
+    });
+  } catch (err) {
+    console.error("getLastMockTestForCourse error:", err);
+    return res.status(500).json({ message: "Failed to load last mock test" });
+  }
+};

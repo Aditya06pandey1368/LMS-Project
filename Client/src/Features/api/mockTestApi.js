@@ -41,6 +41,14 @@ export const mockTestApi = createApi({
       }),
       providesTags: ["MockTests"],
     }),
+    getLastMockTest: builder.query({
+      query: (courseId) => `/last/${courseId}`,
+      providesTags: (_r, _e, courseId) => [
+        { type: "MockTest", id: "LAST" },
+        { type: "MockTest", id: courseId },
+      ],
+      transformResponse: (response) => response, // keep { data: {...} } shape
+    }),
   }),
 });
 
@@ -49,4 +57,5 @@ export const {
   useSaveAnswerMutation,
   useSubmitMockTestMutation,
   useGetMockSessionQuery,
+   useGetLastMockTestQuery,
 } = mockTestApi;

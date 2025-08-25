@@ -42,7 +42,7 @@ app.use("/api/user", userRoute);
 app.use("/api/course", courseRoute);
 app.use("/api/course-purchase", coursePurchaseRoutes);
 app.use("/api/progress", courseProgressRoutes);
-app.use("/api/mocktests", mockTestRoutes);
+app.use("/api", mockTestRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server listening at port ${PORT}`);
