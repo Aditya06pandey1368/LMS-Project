@@ -120,13 +120,13 @@ export default function EditCourse() {
 
   return (
     <motion.div
-      className="p-5 md:p-10 space-y-6 text-gray-800 dark:text-gray-100"
+      className=" md:p-10 space-y-6 text-gray-800 dark:text-gray-100"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
       <div className=" flex flex-col md:flex-row justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4 md:mb-0">
+        <h1 className="md:text-2xl text-xl font-bold mb-4 md:mb-0">
           Add detailed information regarding the course
         </h1>
         <Button asChild>

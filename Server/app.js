@@ -5,6 +5,7 @@ import cors from "cors";
 import connectDb from "./Database/dbConnect.js";
 import userRoute from "./routes/user.route.js";
 import courseRoute from "./routes/course.route.js";
+import notesRoutes from "./routes/notes.routes.js";
 import mediaRoute from "./routes/media.route.js";
 import mockTestRoutes from "./routes/mockTest.routes.js";
 import coursePurchaseRoutes from "./routes/coursePurchase.route.js";
@@ -43,6 +44,7 @@ app.use("/api/course", courseRoute);
 app.use("/api/course-purchase", coursePurchaseRoutes);
 app.use("/api/progress", courseProgressRoutes);
 app.use("/api", mockTestRoutes);
+app.use("/api/notes", notesRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server listening at port ${PORT}`);

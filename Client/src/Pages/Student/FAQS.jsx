@@ -6,7 +6,7 @@ const faqs = [
   { question: "What is this LMS portal?", answer: "It's a platform to learn online, track progress, take quizzes, earn certificates, and interact with courses easily." },
   { question: "How do I enroll in a course?", answer: "Visit the 'Our Courses' section, choose a course, and click enroll. For paid courses, complete the Stripe payment." },
   { question: "Can I track my lecture progress?", answer: "Yes! Your progress is auto-tracked, and you can see which lectures are completed in the course detail page." },
-  { question: "Is there a certificate after course completion?", answer: "Yes! If your quiz score is 70% or above, a downloadable certificate is issued automatically." },
+  { question: "Is there a mock test after course completion?", answer: "Yes, there is a mock test available after completing the course." },
   { question: "What is the Admin Dashboard used for?", answer: "Admins can manage courses, upload lectures, view revenue analytics, and monitor student activities." },
   { question: "How secure is my data on this LMS?", answer: "Your data is encrypted and securely stored in our database. We use modern auth and secure APIs to protect it." },
 ];

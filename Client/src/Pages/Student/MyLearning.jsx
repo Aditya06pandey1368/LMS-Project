@@ -45,7 +45,7 @@ const MyLearning = () => {
                   drop-shadow-md 
                   tracking-wide 
                   mb-10 mt-20 
-                  animate-fade-in"
+                  animate-fade-in pb-2"
       >
         My Learnings
       </h2>

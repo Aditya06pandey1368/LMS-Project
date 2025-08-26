@@ -113,10 +113,10 @@ const EditLecture = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="p-4 md:p-8 max-w-3xl mx-auto"
+      className="p-1 md:p-7 max-w-3xl mx-auto"
     >
       {/* Back Button and Heading */}
-      <div className="flex items-center space-x-4 mb-8 ">
+      <div className="flex items-center space-x-4 mb-5 ">
         <Button
           variant="ghost"
           size="icon"
@@ -124,7 +124,7 @@ const EditLecture = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="text-2xl md:text-3xl font-bold">Update Your Lecture</h1>
+        <h1 className="text-xl md:text-3xl font-bold">Update Your Lecture</h1>
       </div>
 
       {/* Card Section */}

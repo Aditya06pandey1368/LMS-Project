@@ -52,7 +52,7 @@ export default function CreateLecture() {
   }, [isSuccess, error, refetch]);
 
   const handleBack = () => {
-    navigate("/admin/course");
+    navigate(`/admin/course/${courseId}`);
   };
 
   const fileChangeHandler = async (e) => {
@@ -138,7 +138,7 @@ export default function CreateLecture() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen bg-background text-foreground px-4 py-10 sm:px-10 lg:px-32"
+      className="min-h-screen bg-background text-foreground py-5 sm:px-10 lg:px-32"
     >
       <div className="max-w-3xl mx-auto space-y-12">
         {/* Header */}
@@ -147,7 +147,7 @@ export default function CreateLecture() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3">
+          <h1 className="text-2xl sm:text-5xl font-bold mb-3">
             Let’s add lectures
           </h1>
           <p className="text-muted-foreground text-lg">
@@ -224,7 +224,7 @@ export default function CreateLecture() {
         transition={{ delay: 0.3 }}
         className="mt-32"
       >
-        <h2 className="text-3xl sm:text-4xl font-bold mb-10 text-primary">
+        <h2 className="text-2xl sm:text-4xl font-bold mb-10 text-primary">
           Existing Lectures
         </h2>
 

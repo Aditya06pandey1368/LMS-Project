@@ -37,7 +37,7 @@ export default function CourseTable() {
     <motion.div
       ref={ref}
       style={{ scale, opacity }}
-      className="min-h-screen w-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors px-4 py-6 md:px-8 pt-[30px]"
+      className="min-h-screen w-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors  py-6 md:px-8 pt-[30px]"
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-6">

@@ -31,10 +31,16 @@ export default function CourseDetail() {
   const { course, purchased } = data;
 
   const handleContinueCourse = () => {
-    if (purchased || course.coursePrice === undefined) {
-      navigate(`/course-progress/${courseId}`)
-    }
-  };
+  if (
+    purchased || 
+    course.coursePrice === undefined || 
+    course.coursePrice === "Free" || 
+    course.coursePrice === 0
+  ) {
+    navigate(`/course-progress/${courseId}`);
+  }
+};
+
 
   // 🔹 Handle preview selection
   const handlePreviewClick = (lecture) => {
@@ -52,7 +58,8 @@ export default function CourseDetail() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7 }}
       >
-        <h1 className="text-3xl md:text-5xl font-bold pt-12">{course.courseTitle}</h1>
+        <h1 className="text-3xl md:text-5xl bg-gradient-to-r font-bold from-indigo-500 via-purple-500 to-pink-500
+             bg-clip-text text-transparent pt-12 pb-2">{course.courseTitle}</h1>
         <p className="text-xl text-muted-foreground">{course.subTitle}</p>
         <p className="text-sm">
           Created by <span className="font-semibold">{course.creator.name}</span>
@@ -145,11 +152,11 @@ export default function CourseDetail() {
               <Separator className="mb-3" />
               <div className="flex items-center justify-between flex-wrap">
                 <span className="text-xl font-bold">
-                  {course.coursePrice ?? "Free"}
+                  {course.coursePrice > 0 ? course.coursePrice : "Free"}
                 </span>
                 {(purchased ||
                   course.coursePrice === undefined ||
-                  course.coursePrice === "Free") ? (
+                  course.coursePrice === "Free" || course.coursePrice=== 0) ? (
                   <Button onClick={handleContinueCourse}>Continue Course</Button>
                 ) : (
                   <BuyCourseButton courseId={courseId} />

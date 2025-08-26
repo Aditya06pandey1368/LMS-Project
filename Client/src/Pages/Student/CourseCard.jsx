@@ -18,7 +18,7 @@ const CourseCard = ({ course }) => {
       whileHover={{ scale: 1.03 }}
       transition={{ type: "spring", stiffness: 200 }}
     >
-      <Link to={`course-detail/${course._id}`}>
+      <Link to={`/course-detail/${course._id}`}>
       <Card className="shadow-md hover:shadow-xl transition-all dark:bg-gray-800 p-0">
         <img
           src={course.courseThumbnail}
