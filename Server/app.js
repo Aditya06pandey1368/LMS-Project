@@ -9,7 +9,7 @@ import notesRoutes from "./routes/notes.routes.js";
 import mediaRoute from "./routes/media.route.js";
 import mockTestRoutes from "./routes/mockTest.routes.js";
 import coursePurchaseRoutes from "./routes/coursePurchase.route.js";
-import { stripeWebhook } from "./Controllers/coursePurchase.controller.js";
+import { stripeWebhook } from "../Controllers/coursePurchase.controller.js";
 import courseProgressRoutes from "./routes/courseProgress.route.js";
 
 dotenv.config({});
