@@ -1,4 +1,4 @@
-#ScholarHub (Learning Management System Portal)
+# ScholarHub (Learning Management System Portal)
 A full-stack, production-grade Learning Management System (LMS) built to deliver online courses with video lectures, quizzes, progress tracking, payment integration, and an admin dashboard.
 Designed with a scalable architecture, clean UI, and industry-standard best practices.
 
