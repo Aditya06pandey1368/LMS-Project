@@ -13,7 +13,7 @@ import {
   removeLecture,
   searchCourse,
   togglePublishCourse
-} from "../Controllers/course.controller.js";
+} from "../controllers/course.controller.js";
 import upload from "../utils/multer.js";
 
 const router = express.Router();

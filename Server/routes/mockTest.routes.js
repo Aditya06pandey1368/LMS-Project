@@ -6,7 +6,7 @@ import {
   submitMockTest,
   getSession,
   getLastMockTestForCourse,
-} from "../Controllers/mockTest.controller.js";
+} from "../controllers/mockTest.controller.js";
 import  isAuthenticated  from "../middlewares/isAuthenticated.js";
 
 const router = express.Router();
