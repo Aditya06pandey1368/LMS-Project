@@ -1,5 +1,5 @@
 import express from "express";
-import { createCheckoutSession, getAllPurchasedCourse, getCourseDetailWithPurchaseStatus, stripeWebhook } from "../controllers/coursePurchase.controller.js";
+import { createCheckoutSession, getAllPurchasedCourse, getCourseDetailWithPurchaseStatus, stripeWebhook } from "../controller/coursePurchase.controller.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 
 const router = express.Router();
