@@ -1,14 +1,22 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const COURSE_PROGRESS_API = "http://localhost:3001/api/progress";
+// ✅ CHANGE: Use Render Backend URL
+const COURSE_PROGRESS_API = "https://lms-project-1-38j4.onrender.com/api/progress";
 
 export const courseProgressApi = createApi({
     reducerPath: "courseProgressApi",
     baseQuery: fetchBaseQuery({
         baseUrl: COURSE_PROGRESS_API,
         credentials: "include",
+        // ✅ Add prepareHeaders here too just in case
+        prepareHeaders: (headers, { getState }) => {
+            const token = getState().auth.token;
+            if (token) headers.set("Authorization", `Bearer ${token}`);
+            return headers;
+        },
     }),
     endpoints: (builder) => ({
+        // ... (Keep existing endpoints)
         getCourseProgress: builder.query({
             query: (courseId) => ({
                 url: `/${courseId}`,

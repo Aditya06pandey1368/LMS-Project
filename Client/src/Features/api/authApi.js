@@ -1,7 +1,8 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
 import { userLoggedIn } from "../authSlice";
 
-const USER_API = "http://localhost:3001/api/user/"
+// ✅ CHANGE: Use Render Backend URL
+const USER_API = "https://lms-project-1-38j4.onrender.com/api/user/";
 
 export const authApi = createApi({
     reducerPath:"authApi",
@@ -10,6 +11,7 @@ export const authApi = createApi({
         credentials:"include"
     }),
     endpoints: (builder) =>({
+        // ... (Keep existing endpoints: registerUser, loginUser, logoutUser, loadUser, updateUser exactly as they are) ...
         registerUser : builder.mutation({
             query: (inputData) =>({
                 url : "register",
@@ -26,7 +28,11 @@ export const authApi = createApi({
             async onQueryStarted(arg, {queryFulfilled, dispatch}){
                 try {
                     const result = await queryFulfilled;
-                    dispatch(userLoggedIn({user:result.data.user}));
+                    // ✅ CRITICAL: Ensure token is passed in payload if your backend sends it
+                    dispatch(userLoggedIn({
+                        user: result.data.user, 
+                        token: result.data.token // Ensure this matches backend response
+                    }));
                 } catch (error) {
                     console.log(error);
                 }

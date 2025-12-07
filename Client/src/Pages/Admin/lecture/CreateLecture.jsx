@@ -13,7 +13,7 @@ import { Loader2, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-const MEDIA_API = "http://localhost:3001/api/media";
+const MEDIA_API = "https://lms-project-1-38j4.onrender.com/api/media";
 
 export default function CreateLecture() {
   const navigate = useNavigate();

@@ -1,15 +1,23 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const MOCK_TEST_API = "http://localhost:3001/api/mocktests";
+// ✅ CHANGE: Use Render Backend URL
+const MOCK_TEST_API = "https://lms-project-1-38j4.onrender.com/api/mocktests";
 
 export const mockTestApi = createApi({
   reducerPath: "mockTestApi",
   baseQuery: fetchBaseQuery({
     baseUrl: MOCK_TEST_API,
-    credentials: "include", // ✅ include cookies for auth
+    credentials: "include",
+    // ✅ Add prepareHeaders
+    prepareHeaders: (headers, { getState }) => {
+        const token = getState().auth.token;
+        if (token) headers.set("Authorization", `Bearer ${token}`);
+        return headers;
+    },
   }),
-  tagTypes: ["MockTests"], // ✅ tag for cache invalidation
+  tagTypes: ["MockTests"],
   endpoints: (builder) => ({
+    // ... (Keep existing endpoints)
     startMockTest: builder.mutation({
       query: ({ courseId, courseTitle }) => ({
         url: "/start",
@@ -47,7 +55,7 @@ export const mockTestApi = createApi({
         { type: "MockTest", id: "LAST" },
         { type: "MockTest", id: courseId },
       ],
-      transformResponse: (response) => response, // keep { data: {...} } shape
+      transformResponse: (response) => response, 
     }),
   }),
 });

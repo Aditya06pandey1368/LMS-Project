@@ -32,8 +32,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        // ✅ CHANGE: Add your Render Frontend URL here
+        origin: [
+            "http://localhost:5173", 
+            "https://lms-project-frontend-bdbm.onrender.com" 
+        ],
         credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        allowedHeaders: ["Content-Type", "Authorization"], // Explicitly allow Authorization header
     })
 );
 

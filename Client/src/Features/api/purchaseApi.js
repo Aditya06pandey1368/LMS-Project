@@ -1,14 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const COURSE_PURCHASE_API = "http://localhost:3001/api/course-purchase"
+// ✅ CHANGE: Use Render Backend URL
+const COURSE_PURCHASE_API = "https://lms-project-1-38j4.onrender.com/api/course-purchase"
 
 export const purchaseApi = createApi({
     reducerPath:"purchaseApi",
     baseQuery:fetchBaseQuery({
         baseUrl:COURSE_PURCHASE_API,
-        credentials:'include'
+        credentials:'include',
+        // ✅ CRITICAL ADDITION
+        prepareHeaders: (headers, { getState }) => {
+            const token = getState().auth.token;
+            if (token) headers.set("Authorization", `Bearer ${token}`);
+            return headers;
+        },
     }),
-    tagTypes: ["PurchasedCourses"], // ✅ declare tag type
+    tagTypes: ["PurchasedCourses"],
     endpoints:(builder) => ({
         createCheckoutSession : builder.mutation({
             query:(courseId) => ({
@@ -16,7 +23,7 @@ export const purchaseApi = createApi({
                 method:"POST",
                 body:{courseId}
             }),
-            invalidatesTags: ["PurchasedCourses"], // ✅ tell RTK to refresh purchased courses
+            invalidatesTags: ["PurchasedCourses"],
         }),
         getCourseDetailWithStatus: builder.query({
             query:(courseId) => ({
@@ -29,7 +36,7 @@ export const purchaseApi = createApi({
                 url:"/",
                 method:"GET",
             }),
-            providesTags: ["PurchasedCourses"], // ✅ enables auto refresh
+            providesTags: ["PurchasedCourses"],
         })
     })
 })

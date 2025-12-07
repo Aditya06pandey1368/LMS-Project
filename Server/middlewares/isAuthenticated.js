@@ -2,11 +2,13 @@ import jwt from "jsonwebtoken";
 
 const isAuthenticated = async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        // ✅ CHANGE: Check Cookie OR Authorization Header
+        const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
         if (!token) {
             return res.status(401).json({
                 message: "User not authenticated",
-                success: "false"
+                success: false
             })
         }
         const decode = jwt.verify(token, process.env.SECRET_KEY);

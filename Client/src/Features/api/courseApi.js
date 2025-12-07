@@ -1,7 +1,7 @@
-// Features/api/courseApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const COURSE_API = "http://localhost:3001/api/course";
+// ✅ CHANGE: Use Render Backend URL
+const COURSE_API = "https://lms-project-1-38j4.onrender.com/api/course";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
@@ -9,8 +9,17 @@ export const courseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
     credentials: "include",
+    // ✅ CRITICAL ADDITION: Attach Token to Header
+    prepareHeaders: (headers, { getState }) => {
+        const token = getState().auth.token; // Ensure authSlice has 'token'
+        if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
+        }
+        return headers;
+    },
   }),
   endpoints: (builder) => ({
+    // ... (Keep ALL endpoints exactly as they were in your code) ...
     createCourse: builder.mutation({
       query: ({ courseTitle, category }) => ({
         url: "/",
@@ -21,24 +30,17 @@ export const courseApi = createApi({
     }),
     getSearchCourse: builder.query({
       query: ({searchQuery, categories, sortByPrice}) => {
-        //Build query string
         let queryString = `/search?query=${encodeURIComponent(searchQuery)}`
-
-        //append category
         if(categories && categories.length > 0){
           const categoriesString = categories.map(encodeURIComponent).join(",");
           queryString += `&categories=${categoriesString}`;
         }
-
-        //append sort by price
         if(sortByPrice){
           queryString +=  `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
         }
-
         return {
           url : queryString,
           method:"GET",
-
         }
       }
     }),
@@ -69,8 +71,6 @@ export const courseApi = createApi({
         method: "GET",
       }),
     }),
-
-    // ✅ Updated createLecture mutation
     createLecture: builder.mutation({
       query: ({ courseId, lectureTitle, videoUrl, publicId, isPreviewFree }) => ({
         url: `/${courseId}/lecture`,

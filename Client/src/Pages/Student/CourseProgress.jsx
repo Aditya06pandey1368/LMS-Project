@@ -120,9 +120,16 @@ export default function CourseProgress() {
     setNotesData(null);
 
     try {
-      const res = await fetch("http://localhost:3001/api/notes/generate", {
+      // Assuming you have access to the token (e.g., from Redux or LocalStorage)
+      // If 'credentials: include' fails (401 error), you MUST add the token header below.
+
+      const res = await fetch("https://lms-project-1-38j4.onrender.com/api/notes/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          // Recommended: Add this line if you have the token variable available in this file
+          // "Authorization": `Bearer ${token}` 
+        },
         credentials: "include",
         body: JSON.stringify({ lectureTitle }),
       });
@@ -176,16 +183,14 @@ export default function CourseProgress() {
               {/* ✅ Lecture title + Quick Notes button in same row */}
               <div className="flex items-center justify-between mt-4">
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                  {`Lecture ${
-                    courseDetails.lectures.findIndex(
-                      (lec) =>
-                        lec._id ===
-                        (currentLecture?.id || initialLecture._id)
-                    ) + 1
-                  } : ${
-                    currentLecture?.lectureTitle ||
+                  {`Lecture ${courseDetails.lectures.findIndex(
+                    (lec) =>
+                      lec._id ===
+                      (currentLecture?.id || initialLecture._id)
+                  ) + 1
+                    } : ${currentLecture?.lectureTitle ||
                     initialLecture?.lectureTitle
-                  }`}
+                    }`}
                 </h3>
                 <Button
                   variant="outline"
@@ -194,7 +199,7 @@ export default function CourseProgress() {
                   onClick={() =>
                     generateNotes(
                       currentLecture?.lectureTitle ||
-                        initialLecture?.lectureTitle
+                      initialLecture?.lectureTitle
                     )
                   }
                 >
@@ -208,11 +213,10 @@ export default function CourseProgress() {
           <section className="md:w-1/2 flex mt-5 flex-col gap-6">
             <Button
               onClick={completed ? handleIncompleteCourse : handleCompleteCourse}
-              className={`self-start ${
-                allCompleted
+              className={`self-start ${allCompleted
                   ? "bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
                   : "bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-              } text-white transition-colors`}
+                } text-white transition-colors`}
             >
               {completed ? "Mark as incomplete" : "Mark as completed"}
             </Button>
@@ -256,11 +260,10 @@ export default function CourseProgress() {
                   className="cursor-pointer"
                 >
                   <Card
-                    className={`flex justify-around px-6 py-4 w-full ${
-                      lecture._id === currentLecture?._id
+                    className={`flex justify-around px-6 py-4 w-full ${lecture._id === currentLecture?._id
                         ? "bg-gray-500"
                         : " dark:bg-gray-900"
-                    }`}
+                      }`}
                     onClick={() => handleSelectLecture(lecture)}
                   >
                     <div className="flex justify-around flex-1">
@@ -284,11 +287,10 @@ export default function CourseProgress() {
                       {isLectureCompleted(lecture._id) && (
                         <Badge
                           variant="outline"
-                          className={`${
-                            isLectureCompleted(lecture._id)
+                          className={`${isLectureCompleted(lecture._id)
                               ? "text-green-700 border-green-700 dark:text-green-400 dark:border-green-400"
                               : "text-gray-400 border-gray-400 dark:text-gray-500 dark:border-gray-500"
-                          }`}
+                            }`}
                         >
                           Completed
                         </Badge>
