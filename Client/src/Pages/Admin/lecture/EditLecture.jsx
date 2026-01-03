@@ -16,7 +16,12 @@ import {
   useRemoveLectureMutation,
 } from "@/Features/api/courseApi";
 
-const MEDIA_API = "https://lms-project-1-38j4.onrender.com/api/media";
+const BACKEND_URL =
+  import.meta.env.VITE_RENDER_URL ||
+  import.meta.env.VITE_LOCALHOST_URL;
+
+const MEDIA_API = `${BACKEND_URL}/api/media`;
+
 
 const EditLecture = () => {
   const navigate = useNavigate();

@@ -1,7 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// ✅ CHANGE: Use Render Backend URL
-const COURSE_API = "https://lms-project-1-38j4.onrender.com/api/course";
+
+const BACKEND_URL =
+  import.meta.env.VITE_RENDER_URL ||
+  import.meta.env.VITE_LOCALHOST_URL;
+
+const COURSE_API = `${BACKEND_URL}/api/course`;
+
 
 export const courseApi = createApi({
   reducerPath: "courseApi",

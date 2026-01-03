@@ -119,11 +119,17 @@ export default function CourseProgress() {
     setOpenNotes(true);
     setNotesData(null);
 
+    const BACKEND_URL =
+  import.meta.env.VITE_RENDER_URL ||
+  import.meta.env.VITE_LOCALHOST_URL;
+
+
+
     try {
       // Assuming you have access to the token (e.g., from Redux or LocalStorage)
       // If 'credentials: include' fails (401 error), you MUST add the token header below.
 
-      const res = await fetch("https://lms-project-1-38j4.onrender.com/api/notes/generate", {
+      const res = await fetch(`${BACKEND_URL}/api/notes/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

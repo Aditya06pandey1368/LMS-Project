@@ -49,7 +49,7 @@ app.use("/api/user", userRoute);
 app.use("/api/course", courseRoute);
 app.use("/api/course-purchase", coursePurchaseRoutes);
 app.use("/api/progress", courseProgressRoutes);
-app.use("/api", mockTestRoutes);
+app.use("/api/mocktests", mockTestRoutes);
 app.use("/api/notes", notesRoutes);
 
 app.listen(PORT, () => {

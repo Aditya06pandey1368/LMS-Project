@@ -1,4 +1,3 @@
-// server/routes/mockTest.routes.js
 import express from "express";
 import {
   startMockTest,
@@ -7,16 +6,15 @@ import {
   getSession,
   getLastMockTestForCourse,
 } from "../controller/mockTest.controller.js";
-import  isAuthenticated  from "../middlewares/isAuthenticated.js";
+import isAuthenticated from "../middlewares/isAuthenticated.js";
 
 const router = express.Router();
 
-router.post("/mocktests/start", isAuthenticated, startMockTest);
-router.post("/mocktests/answer", isAuthenticated, saveAnswer);
-router.post("/mocktests/submit", isAuthenticated, submitMockTest);
-router.get("/mocktests/session/:sessionId", isAuthenticated, getSession);
-
-// ✅ New route to fetch last score by course
-router.get("/mocktests/last/:courseId", isAuthenticated, getLastMockTestForCourse);
+// Routes are relative to "/api/mocktests"
+router.post("/start", isAuthenticated, startMockTest);
+router.post("/answer", isAuthenticated, saveAnswer);
+router.post("/submit", isAuthenticated, submitMockTest);
+router.get("/last/:courseId", isAuthenticated, getLastMockTestForCourse);
+router.get("/:sessionId", isAuthenticated, getSession);
 
 export default router;
